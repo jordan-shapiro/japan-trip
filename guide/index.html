@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Japan and Seoul Itinerary</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 30 20%27%3E%3Crect width=%2730%27 height=%2720%27 fill=%27%23fff%27 stroke=%27%23ccc%27 stroke-width=%27.6%27/%3E%3Ccircle cx=%2715%27 cy=%2710%27 r=%276%27 fill=%27%23bc002d%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one reading column; a timetable-style rail of day tabs, each tinted by city; stops as a time-stamped line */
+:root {
+  --paper: #f5f6f4;
+  --surface: #ffffff;
+  --ink: #1d2230;
+  --muted: #5d6474;
+  --line: #dcdfe4;
+  --accent: #c8402e;
+  --accent-soft: #f7e4e0;
+  --ok: #2f7a55;
+  --ok-soft: #e1f0e7;
+  --todo: #8a5a00;
+  --todo-soft: #fbefd6;
+  --tyo: #c8402e;
+  --hkn: #3f7d6e;
+  --kyo: #8a4fa0;
+  --osa: #c27a12;
+  --sel: #2f62a8;
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", Georgia, serif;
+  --font-body: "IBM Plex Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14171e;
+    --surface: #1c2029;
+    --ink: #e8eaef;
+    --muted: #a0a7b5;
+    --line: #2e3442;
+    --accent: #ef6a55;
+    --accent-soft: #3a2420;
+    --ok: #6cc596;
+    --ok-soft: #1d3329;
+    --todo: #e6b65c;
+    --todo-soft: #3a2f17;
+    --tyo: #ef6a55;
+    --hkn: #6cbfa9;
+    --kyo: #c48ad6;
+    --osa: #e6a84a;
+    --sel: #79a6e6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14171e;
+  --surface: #1c2029;
+  --ink: #e8eaef;
+  --muted: #a0a7b5;
+  --line: #2e3442;
+  --accent: #ef6a55;
+  --accent-soft: #3a2420;
+  --ok: #6cc596;
+  --ok-soft: #1d3329;
+  --todo: #e6b65c;
+  --todo-soft: #3a2f17;
+  --tyo: #ef6a55;
+  --hkn: #6cbfa9;
+  --kyo: #c48ad6;
+  --osa: #e6a84a;
+  --sel: #79a6e6;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 56px; }
+
+.c-tyo { --city: var(--tyo); }
+.c-hkn { --city: var(--hkn); }
+.c-kyo { --city: var(--kyo); }
+.c-osa { --city: var(--osa); }
+.c-sel { --city: var(--sel); }
+
+header { display: grid; gap: 6px; margin-bottom: 18px; }
+.kicker { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 7vw, 42px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.base { color: var(--muted); margin: 0; font-size: 15px; }
+
+.legs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.leg {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 10px 10px 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--city);
+  border-radius: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  min-width: 0;
+}
+.leg:hover { border-color: var(--city); }
+.leg:focus-visible { outline: 3px solid var(--city); outline-offset: 2px; }
+.leg-city { font-family: var(--font-display); font-weight: 800; font-size: 18px; line-height: 1.2; }
+.leg-dates { font-size: 13px; font-weight: 600; color: var(--city); font-variant-numeric: tabular-nums; }
+.leg-hotel { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.leg .chip { margin-top: 4px; }
+@media (max-width: 640px) {
+  .legs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .legs .leg:last-child { grid-column: 1 / -1; }
+}
+
+.rail-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--paper);
+  padding: 10px 0;
+  margin: 0 -18px 4px;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 18px 4px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.tab {
+  flex: 0 0 auto;
+  width: 62px;
+  appearance: none;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--city);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 6px 2px 7px;
+  font: inherit;
+  cursor: pointer;
+  display: grid;
+  gap: 0;
+  text-align: center;
+  scroll-snap-align: start;
+}
+.tab .dow { font-size: 12px; color: var(--muted); font-weight: 500; }
+.tab .num { font-family: var(--font-display); font-size: 22px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tab .mon { font-size: 10px; font-weight: 600; letter-spacing: .04em; color: var(--city); }
+.tab[aria-selected="true"] { background: var(--city); border-color: var(--city); color: #fff; }
+.tab[aria-selected="true"] .dow,
+.tab[aria-selected="true"] .mon { color: #fff; opacity: .9; }
+.tab:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+.day[hidden] { display: none; }
+.day-head { display: grid; gap: 4px; margin: 12px 0 16px; }
+.day-head .city { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--city); }
+.day-head h2 { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1.2; margin: 0; text-wrap: balance; }
+.day-head p:last-child { margin: 0; color: var(--muted); font-size: 15px; max-width: 62ch; }
+
+ol.stops { list-style: none; margin: 0; padding: 0; display: grid; }
+.stop {
+  display: grid;
+  grid-template-columns: 102px 1fr;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.stop:first-child { border-top: 0; }
+.time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--city);
+  padding-top: 2px;
+  padding-right: 10px;
+  border-right: 2px solid var(--line);
+  white-space: nowrap;
+}
+.what { display: grid; gap: 3px; min-width: 0; }
+.what h3 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.35; }
+.what p { margin: 0; color: var(--muted); font-size: 15px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+.chip {
+  justify-self: start;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+.chip.booked { background: var(--ok-soft); color: var(--ok); }
+.chip.tobook { background: var(--todo-soft); color: var(--todo); }
+.chip.option { background: var(--accent-soft); color: var(--accent); }
+
+.todo {
+  margin-top: 36px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+.todo h2 { font-family: var(--font-display); font-weight: 800; font-size: 20px; margin: 0; }
+.todo ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.todo li span { color: var(--muted); }
+.tablewrap { overflow-x: auto; }
+.bookings table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.bookings th, .bookings td { text-align: left; padding: 7px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+.bookings th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; border-top: 0; }
+.bookings td.conf { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+footer { margin-top: 22px; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 400px) {
+  .stop { grid-template-columns: 90px 1fr; gap: 10px; }
+  .time { font-size: 13px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .day:not([hidden]) { animation: fade .18s ease-out; }
+  @keyframes fade { from { opacity: .6; } to { opacity: 1; } }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">Family trip · Dec 25, 2026 – Jan 5, 2027</p>
+    <h1>Japan and Seoul</h1>
+    <p class="base">Tokyo, Hakone, Kyoto, Osaka, then one night in Seoul. Tap a city or a day.</p>
+  </header>
+
+  <nav class="legs" aria-label="Cities"><a class="leg c-tyo" href="#dec-25" data-day="dec-25"><span class="leg-city">Tokyo</span><span class="leg-dates">Dec 25–29</span></a><a class="leg c-hkn" href="#dec-29" data-day="dec-29"><span class="leg-city">Hakone</span><span class="leg-dates">Dec 29–30</span></a><a class="leg c-kyo" href="#dec-30" data-day="dec-30"><span class="leg-city">Kyoto</span><span class="leg-dates">Dec 30–Jan 3</span></a><a class="leg c-osa" href="#jan-03" data-day="jan-03"><span class="leg-city">Osaka</span><span class="leg-dates">Jan 3–4</span></a><a class="leg c-sel" href="#jan-04" data-day="jan-04"><span class="leg-city">Seoul</span><span class="leg-dates">Jan 4–5</span></a></nav>
+
+  <div class="rail-wrap">
+    <nav class="tabs" role="tablist" aria-label="Choose a day"><button class="tab c-tyo" role="tab" id="tab-dec-25" aria-controls="dec-25" aria-selected="true" tabindex="0"><span class="dow">Fri</span><span class="num">25</span><span class="mon">Dec · TYO</span></button><button class="tab c-tyo" role="tab" id="tab-dec-26" aria-controls="dec-26" aria-selected="false" tabindex="-1"><span class="dow">Sat</span><span class="num">26</span><span class="mon">Dec · TYO</span></button><button class="tab c-tyo" role="tab" id="tab-dec-27" aria-controls="dec-27" aria-selected="false" tabindex="-1"><span class="dow">Sun</span><span class="num">27</span><span class="mon">Dec · TYO</span></button><button class="tab c-tyo" role="tab" id="tab-dec-28" aria-controls="dec-28" aria-selected="false" tabindex="-1"><span class="dow">Mon</span><span class="num">28</span><span class="mon">Dec · TYO</span></button><button class="tab c-hkn" role="tab" id="tab-dec-29" aria-controls="dec-29" aria-selected="false" tabindex="-1"><span class="dow">Tue</span><span class="num">29</span><span class="mon">Dec · HKN</span></button><button class="tab c-kyo" role="tab" id="tab-dec-30" aria-controls="dec-30" aria-selected="false" tabindex="-1"><span class="dow">Wed</span><span class="num">30</span><span class="mon">Dec · KYO</span></button><button class="tab c-kyo" role="tab" id="tab-dec-31" aria-controls="dec-31" aria-selected="false" tabindex="-1"><span class="dow">Thu</span><span class="num">31</span><span class="mon">Dec · KYO</span></button><button class="tab c-kyo" role="tab" id="tab-jan-01" aria-controls="jan-01" aria-selected="false" tabindex="-1"><span class="dow">Fri</span><span class="num">1</span><span class="mon">Jan · KYO</span></button><button class="tab c-kyo" role="tab" id="tab-jan-02" aria-controls="jan-02" aria-selected="false" tabindex="-1"><span class="dow">Sat</span><span class="num">2</span><span class="mon">Jan · KYO</span></button><button class="tab c-osa" role="tab" id="tab-jan-03" aria-controls="jan-03" aria-selected="false" tabindex="-1"><span class="dow">Sun</span><span class="num">3</span><span class="mon">Jan · OSA</span></button><button class="tab c-sel" role="tab" id="tab-jan-04" aria-controls="jan-04" aria-selected="false" tabindex="-1"><span class="dow">Mon</span><span class="num">4</span><span class="mon">Jan · SEL</span></button><button class="tab c-sel" role="tab" id="tab-jan-05" aria-controls="jan-05" aria-selected="false" tabindex="-1"><span class="dow">Tue</span><span class="num">5</span><span class="mon">Jan · SEL</span></button></nav>
+  </div>
+
+  <section class="day c-tyo" id="dec-25" role="tabpanel" aria-labelledby="tab-dec-25"><div class="day-head"><p class="city">Tokyo · Fri, Dec 25</p><h2>Arrival: Asakusa, then Shinjuku at night</h2><p>Get yen at the airport; Himawari is cash only.</p></div><ol class="stops"><li class="stop"><div class="time">2:20 PM</div><div class="what"><h3>Land at Haneda (HND)</h3></div></li><li class="stop"><div class="time">4:30 PM</div><div class="what"><h3>Check in at the hotel</h3></div></li><li class="stop"><div class="time">6:00 PM</div><div class="what"><h3>Kaminarimon and Senso-ji at night</h3><p>Giant red lantern, lit five-story pagoda, Skytree glowing behind. Pull an omikuji fortune.</p></div></li><li class="stop"><div class="time">7:30 PM</div><div class="what"><h3>Himawari Sushi Shintoshin</h3><p>Grab-off-the-belt kaiten sushi, west side of Shinjuku. Birthday dinner.</p></div></li><li class="stop"><div class="time">8:45 PM</div><div class="what"><h3>Omoide Yokocho (Piss Alley)</h3><p>Yakitori smoke and tiny counters.</p></div></li><li class="stop"><div class="time">9:05 PM</div><div class="what"><h3>3D calico cat billboard</h3><p>Walk under the tracks to the East Exit plaza. Looks best after dark.</p></div></li><li class="stop"><div class="time">9:20 PM</div><div class="what"><h3>Kabukicho gate and Godzilla head</h3><p>Red Ichibangai arch, then Godzilla lit up over Toho Cinemas.</p></div></li><li class="stop"><div class="time">9:40 PM</div><div class="what"><h3>Golden Gai lanes and Ramen Nagi</h3><p>Up the stairs on G2 Street. Open 24 hours, 9-seat counter, expect a line.</p></div></li></ol></section><section class="day c-tyo" id="dec-26" role="tabpanel" aria-labelledby="tab-dec-26" hidden><div class="day-head"><p class="city">Tokyo · Sat, Dec 26</p><h2>A morning of eating, Ginza, then Ghibli</h2><p>Jet lag makes the 4 AM start easier on the first morning. Graze through two markets, see Ginza, nap for about an hour, then out west to Mitaka for the 4:00 Ghibli entry.</p></div><ol class="stops"><li class="stop"><div class="time">4:15 AM</div><div class="what"><h3>Cab to Toyosu</h3><p>About 20 minutes.</p></div></li><li class="stop"><div class="time">5:30 AM</div><div class="what"><h3>Tuna auction viewing deck</h3></div></li><li class="stop"><div class="time">6:30 AM</div><div class="what"><h3>Sushi breakfast at Toyosu</h3><p>Get in line right after the auction. Sushi Dai and Daiwa Sushi are the famous counters; the lines are long, so any counter in the market blocks is a fine backup.</p></div></li><li class="stop"><div class="time">8:15 AM</div><div class="what"><h3>Cab to Tsukiji</h3><p>About 10 minutes.</p></div></li><li class="stop"><div class="time">8:30 AM</div><div class="what"><h3>Tsukiji Outer Market, grazing</h3><p>Hot tamagoyaki on a stick, beef stew bowls at Kitsuneya, grilled wagyu and scallop skewers, strawberry daifuku. Plenty that isn&#x27;t raw fish.</p></div></li><li class="stop"><div class="time">9:45 AM</div><div class="what"><h3>Aritsugu knives and Namiyoke shrine</h3><p>Knife shop since the 1500s; they engrave names. Then the shrine&#x27;s giant lion heads.</p></div></li><li class="stop"><div class="time">10:30 AM</div><div class="what"><h3>Tsukiji Hongan-ji</h3><p>Indian-style stone temple from 1934, with a pipe organ inside. 5-minute walk.</p></div></li><li class="stop"><div class="time">11:00 AM</div><div class="what"><h3>Kabuki-za, then Itoya</h3><p>Theater facade, then 12 floors of stationery.</p></div></li><li class="stop"><div class="time">12:00 PM</div><div class="what"><h3>Ginza 4-chome crossing and Mitsukoshi depachika</h3><p>Wako clock tower; the basement food hall for a light lunch. Chuo-dori goes car-free at noon on weekends.</p></div></li><li class="stop"><div class="time">12:30 PM</div><div class="what"><h3>Hakuhinkan Toy Park</h3><p>Toy store on many floors, at the south end of Chuo-dori.</p></div></li><li class="stop"><div class="time">1:00 PM</div><div class="what"><h3>Ginza line home from Shimbashi, nap</h3><p>Direct, about 20 minutes. Nap until about 2:30.</p></div></li><li class="stop"><div class="time">2:45 PM</div><div class="what"><h3>Leave for Mitaka</h3><p>Ginza line to Kanda, JR Chuo Rapid to Mitaka (about 30 minutes), then a 15-minute walk or the yellow community bus.</p></div></li><li class="stop"><div class="time">4:00 PM</div><div class="what"><h3>Ghibli Museum</h3><p>All four enter together. No photos inside; the museum closes at 6.</p></div></li><li class="stop"><div class="time">6:00 PM</div><div class="what"><h3>Walk through Inokashira Park to Kichijoji</h3><p>About 15 minutes along the pond.</p></div></li><li class="stop"><div class="time">6:30 PM</div><div class="what"><h3>Dinner in Kichijoji</h3><p>Harmonica Yokocho, a maze of tiny post-war market alleys. JR Chuo line toward Kanda, then the Ginza line home.</p></div></li></ol></section><section class="day c-tyo" id="dec-27" role="tabpanel" aria-labelledby="tab-dec-27" hidden><div class="day-head"><p class="city">Tokyo · Sun, Dec 27</p><h2>Harajuku, two big meals, teamLab</h2><p>Meiji Jingu closes at 4 PM in December, so it&#x27;s first.</p></div><ol class="stops"><li class="stop"><div class="time">9:00 AM</div><div class="what"><h3>Meiji Jingu</h3><p>Big wooden torii, sake barrel wall, the paired &quot;married&quot; camphor trees.</p></div></li><li class="stop"><div class="time">10:00 AM</div><div class="what"><h3>mipig cafe Harajuku</h3><p>Micro pig cafe. Book the private room.</p></div></li><li class="stop"><div class="time">10:45 AM</div><div class="what"><h3>Takeshita Street</h3><p>Totti Candy&#x27;s rainbow cotton candy, Marion Crepes.</p></div></li><li class="stop"><div class="time">11:30 AM</div><div class="what"><h3>Harakado / Tokyu Plaza mirrored entrance</h3><p>Kaleidoscope escalator at the Jingumae crossing.</p></div></li><li class="stop"><div class="time">11:55 AM</div><div class="what"><h3>Cab to lunch</h3></div></li><li class="stop"><div class="time">12:15 PM</div><div class="what"><h3>Lunch at L&#x27;Effervescence</h3></div></li><li class="stop"><div class="time">3:15 PM</div><div class="what"><h3>Zojo-ji</h3><p>1622 Sangedatsumon gate, rows of Jizo in red caps with pinwheels, Tokyo Tower behind.</p></div></li><li class="stop"><div class="time">4:15 PM</div><div class="what"><h3>teamLab Borderless</h3><p>10-minute walk from Zojo-ji, in Azabudai Hills.</p></div></li><li class="stop"><div class="time">7:00 PM</div><div class="what"><h3>Dinner at Den</h3></div></li><li class="stop"><div class="time">9:30 PM</div><div class="what"><h3>Home to rest</h3><p>Cab or the Ginza line from Gaiemmae. A big day; Shibuya is tomorrow.</p></div></li></ol></section><section class="day c-tyo" id="dec-28" role="tabpanel" aria-labelledby="tab-dec-28" hidden><div class="day-head"><p class="city">Tokyo · Mon, Dec 28</p><h2>Old Tokyo morning, river boat, sushi lunch, Shibuya at sunset</h2><p>Book Shibuya Sky: sunset slots release two weeks ahead at midnight Japan time (Sat Dec 13, 10 AM ET) and sell out fast. Buy adult tickets online; children&#x27;s tickets are sold only at the counter on the day.</p></div><ol class="stops"><li class="stop"><div class="time">8:00 AM</div><div class="what"><h3>Ueno Park</h3><p>A short walk from the hotel. Gold Toshogu shrine, Kiyomizu Kannon-do&#x27;s &quot;Moon Pine&quot;, Hanazono Inari torii tunnel.</p></div></li><li class="stop"><div class="time">9:00 AM</div><div class="what"><h3>Kappabashi Kitchen Street</h3><p>Just past the hotel toward Asakusa. Plastic fake-food samples, knives, ceramics, chef&#x27;s tools. Look for the giant chef head on the Niimi building.</p></div></li><li class="stop"><div class="time">10:00 AM</div><div class="what"><h3>Senso-ji and Nakamise in daylight</h3><p>You saw it lit up on the 25th; now the shops are open. Snack on ningyo-yaki cakes and age-manju.</p></div></li><li class="stop"><div class="time">10:45 AM</div><div class="what"><h3>Sumida River water bus, Asakusa to Hama-rikyu Gardens</h3><p>From the Azumabashi pier: about 35 minutes under 13 bridges. ¥1,180 adults, ¥470 children, including garden admission. Only about 3 departures a day, so check the Tokyo Cruise timetable. Then a short walk through the garden and on to Daimon. Backup: Toei Asakusa line, Asakusa to Daimon, about 20 minutes.</p></div></li><li class="stop"><div class="time">12:00 PM</div><div class="what"><h3>Sushi Hiroya, omakase lunch</h3><p>¥19,800 per person, paid at the restaurant. Everyone starts together at 12:00, so arrive by 11:50. No perfume or strong fragrance.</p></div></li><li class="stop"><div class="time">2:15 PM</div><div class="what"><h3>Shibuya Parco, 6th floor</h3><p>JR Yamanote from Hamamatsucho, about 25 minutes. Nintendo Tokyo, Pokémon Center Shibuya, Capcom Store and the Jump Shop on one floor. Then wander Center Gai.</p></div></li><li class="stop"><div class="time">4:00 PM</div><div class="what"><h3>Shibuya Sky at sunset</h3><p>Rooftop deck 229 m above the crossing, in Shibuya Scramble Square right over the station. Sunset is about 4:30. Lockers for bags and hats; the roof is cold and windy.</p></div></li><li class="stop"><div class="time">5:30 PM</div><div class="what"><h3>Shibuya Scramble Crossing</h3><p>Walk it at dusk, then watch it from above at the Starbucks or the Magnet by Shibuya109 rooftop. Hachiko statue, the &quot;Myth of Tomorrow&quot; mural, then Mega Don Quijote.</p></div></li><li class="stop"><div class="time">Evening</div><div class="what"><h3>Possible dinner: Sushi Ginza Onodera</h3><p>An option for tonight. The Ginza line runs direct from Shibuya to Ginza, about 16 minutes. Same day as the Hiroya sushi lunch.</p></div></li><li class="stop"><div class="time">Evening</div><div class="what"><h3>Or: Akihabara and a casual dinner on the way home</h3><p>Arcades (GiGO, Taito Station) and Radio Kaikan, plus tonkatsu or ramen nearby. Akihabara is one stop from the hotel area.</p></div></li><li class="stop"><div class="time">Late</div><div class="what"><h3>Ship big bags to the Kyoto hotel, pack for Hakone</h3><p>Hotel luggage delivery or takkyubin. Hakone on overnight bags only.</p></div></li></ol></section><section class="day c-hkn" id="dec-29" role="tabpanel" aria-labelledby="tab-dec-29" hidden><div class="day-head"><p class="city">Hakone · Tue, Dec 29</p><h2>Sumo practice, then up the mountain</h2><p>Check out before sumo and leave bags at the front desk. The ryokan is in Ashinoyu, the highest hot-spring area in Hakone.</p></div><ol class="stops"><li class="stop"><div class="time">Before 8 AM</div><div class="what"><h3>Check out, leave bags at front desk</h3></div></li><li class="stop"><div class="time">8:30 AM</div><div class="what"><h3>Sumo morning practice, Tatsunami-beya</h3><p>About 1 hour 50 minutes.</p></div></li><li class="stop"><div class="time">10:45 AM</div><div class="what"><h3>Back to hotel for bags</h3><p>Short cab ride.</p></div></li><li class="stop"><div class="time">11:15 AM</div><div class="what"><h3>Head to Shinjuku</h3><p>About 40 minutes by cab or train.</p></div></li><li class="stop"><div class="time">12:30–1 PM</div><div class="what"><h3>Romancecar to Hakone-Yumoto</h3><p>About 85 minutes.</p></div></li><li class="stop"><div class="time">2:15 PM</div><div class="what"><h3>Up to Ashinoyu</h3><p>Ryokan car from Hakone-Yumoto, or the Tozan bus toward Moto-Hakone.</p></div></li><li class="stop"><div class="time">3:00 PM</div><div class="what"><h3>Check in at the hotel</h3></div></li><li class="stop"><div class="time">Evening</div><div class="what"><h3>Kaiseki dinner with New Year dishes</h3><p>Ask the room attendant what each osechi dish means.</p></div></li></ol></section><section class="day c-kyo" id="dec-30" role="tabpanel" aria-labelledby="tab-dec-30" hidden><div class="day-head"><p class="city">Kyoto · Wed, Dec 30</p><h2>Hakone loop, then Kyoto by lantern</h2><p>Peak New Year travel day. Reserved Hikari seats from Odawara are essential.</p></div><ol class="stops"><li class="stop"><div class="time">Early</div><div class="what"><h3>Onsen and breakfast</h3><p>Optional: the old Tokaido stone road near Ashinoyu.</p></div></li><li class="stop"><div class="time">9:15 AM</div><div class="what"><h3>Lake Ashi and the Hakone Shrine lake torii</h3><p>Best odds of seeing Fuji are in the morning.</p></div></li><li class="stop"><div class="time">Late AM</div><div class="what"><h3>The Hakone loop</h3><p>Boat across Lake Ashi, ropeway over Owakudani, cable car, then the Tozan train down. The ropeway can close in wind; a bus replaces it.</p></div></li><li class="stop"><div class="time">1:00 PM</div><div class="what"><h3>Hikari from Odawara to Kyoto</h3><p>About 2 hours. Nozomi trains don&#x27;t stop at Odawara.</p></div></li><li class="stop"><div class="time">4:00 PM</div><div class="what"><h3>Check in at the hotel</h3></div></li><li class="stop"><div class="time">4:45 PM</div><div class="what"><h3>Depachika run at Takashimaya or Daimaru</h3><p>Stock up for the Jan 1 dinner at the apartment.</p></div></li><li class="stop"><div class="time">5:30 PM</div><div class="what"><h3>Higashiyama by lantern</h3><p>Yasaka Shrine, down Ninenzaka and Sannenzaka, then Gion and Hanamikoji. Shops are open tonight; Jan 1–3 most aren&#x27;t.</p></div></li><li class="stop"><div class="time">8:00 PM</div><div class="what"><h3>Dinner at Yakiniku Yazawa Kyoto</h3><p>Chef&#x27;s choice wagyu course, 2-hour seating. Near Shijo-Karasuma, about 15 minutes by cab from Gion.</p></div></li></ol></section><section class="day c-kyo" id="dec-31" role="tabpanel" aria-labelledby="tab-dec-31" hidden><div class="day-head"><p class="city">Kyoto · Thu, Dec 31</p><h2>New Year&#x27;s Eve: Fushimi Inari at dawn</h2><p>The last quiet morning before the New Year shrine crowds. Fushimi Inari is about 6 minutes on the Keihan from Kiyomizu-Gojo.</p></div><ol class="stops"><li class="stop"><div class="time">6:45 AM</div><div class="what"><h3>Fushimi Inari</h3><p>Sunrise is around 7:05. Full loop to the summit; the Yotsutsuji viewpoint is the halfway payoff. Down by about 9:30.</p></div></li><li class="stop"><div class="time">Late AM</div><div class="what"><h3>Back to the apartment, rest</h3></div></li><li class="stop"><div class="time">Afternoon</div><div class="what"><h3>Nishiki Market</h3><p>The biggest New Year shopping day of its year: mobbed, loud, great. Jan 1–3 it&#x27;s mostly shut.</p></div></li><li class="stop"><div class="time">Afternoon</div><div class="what"><h3>Matcha at Tsujiri on Shijo</h3></div></li><li class="stop"><div class="time">7:00 PM</div><div class="what"><h3>Kodaiji Tantra, New Year tempura kaiseki</h3><p>¥36,300 per person, paid at the restaurant; 3-hour seating.</p></div></li><li class="stop"><div class="time">7:30 PM</div><div class="what"><h3>Tempura Endo Yasaka, counter</h3><p>Prepaid ¥126,560 for 4. Its rules require a private room for parties with a child under 13.</p></div></li><li class="stop"><div class="time">10:30 PM</div><div class="what"><h3>Okera mairi at Yasaka Shrine</h3><p>Carry the sacred fire home on a rope. Or joya no kane, the 108 bell strikes at Chion-in. Both are a short walk from dinner. Walk home; taxis won&#x27;t exist.</p></div></li></ol></section><section class="day c-kyo" id="jan-01" role="tabpanel" aria-labelledby="tab-jan-01" hidden><div class="day-head"><p class="city">Kyoto · Fri, Jan 1</p><h2>New Year&#x27;s Day: shrines and temples</h2><p>Temples and shrines are the one thing reliably open today, and most restaurants are closed, so lunch is booked.</p></div><ol class="stops"><li class="stop"><div class="time">Morning</div><div class="what"><h3>Hatsumode at Yasaka Shrine</h3><p>The first shrine visit of the year, with festival food stalls.</p></div></li><li class="stop"><div class="time">Morning</div><div class="what"><h3>Maruyama Park to Kiyomizu-dera</h3><p>Kiyomizu-dera opens at 6 AM. The same streets as Dec 30, now in daylight and New Year dress.</p></div></li><li class="stop"><div class="time">Late AM</div><div class="what"><h3>Kodai-ji</h3><p>Leave by about 11:30 for lunch; about 15 minutes by cab.</p></div></li><li class="stop"><div class="time">12:00 PM</div><div class="what"><h3>Lunch at Takezaki</h3><p>Lunch omakase kaiseki, ¥11,000 per person, paid at the restaurant. Oshikoji-Takakura, near Karasuma-Oike. Arrive by 11:55; about 2 hours.</p></div></li><li class="stop"><div class="time">3:30 PM</div><div class="what"><h3>MAIKOYA Ninja Experience</h3><p>Family ninja experience. Meet at the Samurai Ninja Museum Kyoto annex, not the main building.</p></div></li><li class="stop"><div class="time">Evening</div><div class="what"><h3>New Year dinner at the apartment</h3><p>Osechi delivery, or the depachika haul from Dec 30.</p></div></li></ol></section><section class="day c-kyo" id="jan-02" role="tabpanel" aria-labelledby="tab-jan-02" hidden><div class="day-head"><p class="city">Kyoto · Sat, Jan 2</p><h2>Arashiyama, monkeys, Golden Pavilion</h2><p>Monkey Park is closed Jan 1 and open today. Kinkaku-ji closes at 5 PM, so keep the afternoon moving.</p></div><ol class="stops"><li class="stop"><div class="time">7:30 AM</div><div class="what"><h3>Arashiyama Bamboo Grove and Nonomiya Shrine</h3><p>Go early, before the crowds.</p></div></li><li class="stop"><div class="time">8:45 AM</div><div class="what"><h3>Coffee Shop Yamamoto (珈琲店 山本)</h3><p>Old-school kissaten in Setogawa-cho, about 10 minutes&#x27; walk north of Saga-Arashiyama Station. Order the Yamamoto blend and the beef cutlet sandwich, plus French toast for the kids. Keep it light; lunch is a 9-course temple meal at 12:30. Opens 7 AM, closed Thursdays; check New Year hours.</p></div></li><li class="stop"><div class="time">10:15 AM</div><div class="what"><h3>Tenryu-ji garden</h3><p>Come in through the north gate from the bamboo grove path. You need a garden ticket for lunch here anyway.</p></div></li><li class="stop"><div class="time">12:30 PM</div><div class="what"><h3>Lunch at Shigetsu, Tenryu-ji</h3><p>Shojin ryori (Buddhist temple vegetarian) on tatami. &quot;Hana&quot; course, ¥9,000 per person, paid at the restaurant, plus the ¥500 Tenryu-ji admission. 90-minute seating.</p></div></li><li class="stop"><div class="time">1:45 PM</div><div class="what"><h3>Iwatayama Monkey Park</h3><p>Cross Togetsukyo Bridge. About an hour up and back, a real uphill walk with a big payoff.</p></div></li><li class="stop"><div class="time">3:30 PM</div><div class="what"><h3>Kinkaku-ji, the Golden Pavilion</h3><p>Taxi, about 20 minutes from Arashiyama. Last entry before 5 PM.</p></div></li><li class="stop"><div class="time">If time</div><div class="what"><h3>Ryoan-ji rock garden</h3><p>A 15-minute walk from Kinkaku-ji, also closes at 5.</p></div></li><li class="stop"><div class="time">5:15 PM</div><div class="what"><h3>Taxi to Gion</h3><p>About 25–30 minutes from Kinkaku-ji/Ryoan-ji to Shijo-Ohashi. Department store lucky-bag (fukubukuro) sales are on today too, if anyone wants a detour.</p></div></li><li class="stop"><div class="time">5:45 PM</div><div class="what"><h3>Soba: Matsuba, nishin soba</h3><p>The shop that invented nishin soba (sweet-simmered herring on soba) in 1882, at the east end of Shijo Bridge next to Minamiza. Nishin soba about ¥1,650; plain kake soba or tempura soba for the kids. Normally 10:30 AM–9 PM (last order 8:30), closed Wednesdays; check New Year hours.</p></div></li><li class="stop"><div class="time">6:45 PM</div><div class="what"><h3>Gyoza: Gion Gyoza Hohei</h3><p>5-minute walk into Gion. Tiny Tabelog 100 counter making small, very garlicky one-bite gyoza (garlic-free and ginger versions too). Cheap, walk-in only, expect a line. Usually opens 5 or 6 PM, closed Sundays; check New Year hours. Backup: Chao Chao Gyoza, Sanjo-Kiyamachi, 10 minutes across the river (opens 2 PM on Saturdays).</p></div></li></ol></section><section class="day c-osa" id="jan-03" role="tabpanel" aria-labelledby="tab-jan-03" hidden><div class="day-head"><p class="city">Osaka · Sun, Jan 3</p><h2>Nara, then a night in Osaka</h2><p>Leave the bags with hotel in the morning; their delivery service brings them to the Osaka hotel the same day, so Nara is bag-free.</p></div><ol class="stops"><li class="stop"><div class="time">8:00 AM</div><div class="what"><h3>Check out, hand bags to hotel luggage delivery</h3><p>Kyoto to the Osaka hotel, same-day.</p></div></li><li class="stop"><div class="time">8:15 AM</div><div class="what"><h3>Cab to Kyoto Station</h3><p>About 10 minutes.</p></div></li><li class="stop"><div class="time">8:45 AM</div><div class="what"><h3>Kintetsu from Kyoto to Nara</h3><p>About 35–45 minutes on the Limited Express.</p></div></li><li class="stop"><div class="time">9:45 AM</div><div class="what"><h3>Nara Park deer</h3><p>They bow if you bow.</p></div></li><li class="stop"><div class="time">10:30 AM</div><div class="what"><h3>Todai-ji and the Great Buddha</h3><p>Find the pillar hole at the Buddha&#x27;s base, sized to his nostril. Kids crawl through for luck.</p></div></li><li class="stop"><div class="time">12:00 PM</div><div class="what"><h3>Kasuga Taisha lanterns, lunch in Nara-machi</h3><p>Hundreds of stone and bronze lanterns, then the old merchant streets.</p></div></li><li class="stop"><div class="time">2:30 PM</div><div class="what"><h3>Kintetsu from Nara to Osaka-Namba</h3><p>About 40 minutes, direct.</p></div></li><li class="stop"><div class="time">3:30 PM</div><div class="what"><h3>Check in at the hotel</h3></div></li><li class="stop"><div class="time">Evening</div><div class="what"><h3>Dotonbori</h3><p>The Glico running man sign, takoyaki stands, the Don Quijote Ebisu Tower ferris wheel built into the building.</p></div></li><li class="stop"><div class="time">Dinner</div><div class="what"><h3>Kushikatsu in Shinsekai</h3><p>Deep-fried skewers under Tsutenkaku tower, a few subway stops south. One strict rule: no double-dipping.</p></div></li></ol></section><section class="day c-sel" id="jan-04" role="tabpanel" aria-labelledby="tab-jan-04" hidden><div class="day-head"><p class="city">Seoul · Mon, Jan 4</p><h2>Osaka morning, Kobe beef, fly to Seoul</h2><p>Flight leaves from Kobe Airport (UKB), not Kansai. Kobe Airport Terminal 2 has almost no shops, so buy gifts in Osaka or Sannomiya.</p></div><ol class="stops"><li class="stop"><div class="time">9:30 AM</div><div class="what"><h3>Check out, leave bags at the hotel</h3></div></li><li class="stop"><div class="time">10:00 AM</div><div class="what"><h3>Osaka Aquarium Kaiyukan</h3><p>Whale sharks. Or Kuromon Market if you&#x27;d rather stay close.</p></div></li><li class="stop"><div class="time">12:30 PM</div><div class="what"><h3>Back to the hotel for bags, cab to Osaka-Namba station</h3></div></li><li class="stop"><div class="time">1:00 PM</div><div class="what"><h3>Hanshin line to Kobe-Sannomiya</h3><p>About 40 minutes, direct. Coin lockers at the station.</p></div></li><li class="stop"><div class="time">1:45 PM</div><div class="what"><h3>Kobe beef lunch in Sannomiya</h3><p>Then Daimaru or Sogo basement for gifts.</p></div></li><li class="stop"><div class="time">3:45 PM</div><div class="what"><h3>Port Liner to Kobe Airport</h3><p>About 18 minutes.</p></div></li><li class="stop"><div class="time">6:40 PM</div><div class="what"><h3>Fly Kobe to Seoul</h3></div></li><li class="stop"><div class="time">9:30 PM</div><div class="what"><h3>Incheon Airport: taxi to the hotel</h3><p>About 60–70 minutes at night.</p></div></li><li class="stop"><div class="time">10:45 PM</div><div class="what"><h3>Check in at the hotel</h3></div></li><li class="stop"><div class="time">11:00 PM</div><div class="what"><h3>Late dinner: Jongno 3-ga pojangmacha street</h3><p>Drop the bags and walk about 5–10 minutes east toward Jongno 3-ga Station. The tented food-cart street starts at Exit 4; the tented hof alley behind the station serves fried chicken, tteokbokki and cold beer at plastic tables until about 2–3 AM. Bring cash. Plan B: any 24-hour convenience store for ramyeon and kimbap.</p></div></li></ol></section><section class="day c-sel" id="jan-05" role="tabpanel" aria-labelledby="tab-jan-05" hidden><div class="day-head"><p class="city">Seoul · Tue, Jan 5</p><h2>Palaces, markets, a bathhouse, then home</h2><p>One full day in Seoul before the 9 PM flight to JFK.</p></div><ol class="stops"><li class="stop"><div class="time">7:00 AM</div><div class="what"><h3>Cheonggyecheon stream walk</h3><p>A restored stream below street level, quiet at this hour.</p></div></li><li class="stop"><div class="time">8:30 AM</div><div class="what"><h3>Check out, leave bags at the front desk</h3><p>Check-out is 11 AM, so you can leave earlier. Pick up the bags after the Gwangjang lunch, on the way to the spa.</p></div></li><li class="stop"><div class="time">9:00 AM</div><div class="what"><h3>Changdeokgung Palace</h3><p>The UNESCO-listed Joseon palace. Calmer than Gyeongbokgung.</p></div></li><li class="stop"><div class="time">10:30 AM</div><div class="what"><h3>Huwon Secret Garden tour</h3><p>Timed guided tour, capped at 50 people.</p></div></li><li class="stop"><div class="time">11:45 AM</div><div class="what"><h3>Bukchon Hanok Village</h3><p>Traditional tile-roofed houses on steep lanes. People live here; keep it quiet.</p></div></li><li class="stop"><div class="time">12:45 PM</div><div class="what"><h3>Insadong</h3><p>Tea houses, ceramics, the Ssamziegil spiral mall.</p></div></li><li class="stop"><div class="time">1:30 PM</div><div class="what"><h3>Gwangjang Market lunch</h3><p>Bindaetteok mung-bean pancakes, mayak gimbap, tteokbokki.</p></div></li><li class="stop"><div class="time">2:45 PM</div><div class="what"><h3>Dragon Hill Spa, Yongsan</h3><p>A Korean bathhouse. Shower and reset before the long flight.</p></div></li><li class="stop"><div class="time">4:20 PM</div><div class="what"><h3>To Seoul Station, AREX to Incheon</h3><p>At the airport around 5:50.</p></div></li><li class="stop"><div class="time">9:00 PM</div><div class="what"><h3>Fly home from Seoul Incheon</h3></div></li></ol></section>
+
+  <footer>Times are planning estimates. Check each venue's year-end and New Year hours before going.</footer>
+</div>
+
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var ids = tabs.map(function (t) { return t.getAttribute('aria-controls'); });
+
+  function show(id, updateHash) {
+    if (ids.indexOf(id) === -1) id = ids[0];
+    var active = null;
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('aria-controls') === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      if (on) active = t;
+    });
+    ids.forEach(function (d) {
+      var el = document.getElementById(d);
+      if (el) el.hidden = d !== id;
+    });
+    if (active && active.scrollIntoView) {
+      try { active.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) {}
+    }
+    if (updateHash) {
+      try { history.replaceState(null, '', '#' + id); } catch (e) {}
+    }
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      show(t.getAttribute('aria-controls'), true);
+    });
+    t.addEventListener('keydown', function (e) {
+      var next = null;
+      if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (next) { e.preventDefault(); next.focus(); next.click(); }
+    });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('.leg')).forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      show(a.getAttribute('data-day'), true);
+      var rail = document.querySelector('.rail-wrap');
+      if (rail) window.scrollTo(0, rail.offsetTop);
+    });
+  });
+
+  window.addEventListener('hashchange', function () { show(location.hash.slice(1), false); });
+  show(location.hash.slice(1), false);
+  window.scrollTo(0, 0);
+})();
+</script>
+</body>
+</html>
